@@ -1,0 +1,61 @@
+services:
+  mysql:
+    image: mysql
+    container_name: db_cont
+    volumes:
+      - "mysql-data:/var/lib/mysql/"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=test_db
+    networks:
+      - "notes-app-nw"
+    ports:
+      - "3306:3306"
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  django_app:
+    build:
+      context: .
+    image: django_app
+    container_name: django_cont
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - ".env"
+    networks:
+      - "notes-app-nw"
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/admin || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  nginx:
+    build: ./nginx
+    image: nginx
+    container_name: nginx
+    depends_on:
+      - django_app
+    networks:
+      - "notes-app-nw"
+    ports:
+      - "80:80"
+    restart: always
+
+networks:
+  notes-app-nw:
+    name: notes-app-nw
+    external: true
+volumes:
+  mysql-data:
