@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.11 as builder
 
 WORKDIR /app/backend
 
@@ -11,7 +11,11 @@ RUN apt-get update \
 
 # Install app dependencies
 RUN pip install mysqlclient
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --prefix=/install -r requirements.txt
+
+FROM python:3.11-slim
+WORKDIR /app/backend
+COPY --from=builder /install /usr/local
 
 COPY . /app/backend
 
