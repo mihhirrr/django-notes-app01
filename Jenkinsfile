@@ -2,14 +2,13 @@ pipeline {
     agent any
 
     stages {
-        stage('clone') {
+        stage('Checkout') {
             steps {
                 git url: "https://github.com/mihhirrr/django-notes-app01.git", branch: "main"
             }
         }
         stage('build') {
             steps {
-                sh "whoami"
                 sh "docker build -t django-app:latest ."
             }
         }
