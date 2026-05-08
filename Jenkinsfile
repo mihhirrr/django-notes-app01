@@ -9,7 +9,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                sh "docker build -t django-app:latest ."
+                sh "docker build --pull --no-cache -t django-app:latest ."
             }
         }
         stage('Tag image'){
