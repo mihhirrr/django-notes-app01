@@ -2,11 +2,13 @@ pipeline {
     agent any
 
     stages {
+/*
         stage('Checkout') {
             steps {
                 git url: "https://github.com/mihhirrr/django-notes-app01.git", branch: "main"
             }
         }
+*/
         stage('build') {
             steps {
                 sh "docker build --pull --no-cache -t django-app:latest ."
