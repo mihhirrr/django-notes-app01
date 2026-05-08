@@ -20,9 +20,7 @@ services:
       start_period: 60s
 
   django_app:
-    build:
-      context: .
-    image: django_app
+    image: mihirdongare/django-app:latest
     container_name: django_cont
     depends_on:
       mysql:
