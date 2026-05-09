@@ -2,14 +2,16 @@ pipeline {
     agent any
 
     stages {
+/*
         stage('Checkout') {
             steps {
                 git url: "https://github.com/mihhirrr/django-notes-app01.git", branch: "main"
             }
         }
+*/
         stage('build') {
             steps {
-                sh "docker build -t django-app:latest ."
+                sh "docker build --pull --no-cache -t django-app:latest ."
             }
         }
         stage('Tag image'){
@@ -34,7 +36,7 @@ pipeline {
         }
         stage('run') {
             steps {
-                sh "docker compose up -d"
+                sh "docker compose up -d --build"
             }
         }
     }
